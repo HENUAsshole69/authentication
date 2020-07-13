@@ -3,16 +3,20 @@ package xyz.luchengeng.authentication.controller
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.PageRequest
+import org.springframework.data.repository.findByIdOrNull
 import org.springframework.web.bind.annotation.*
 import xyz.luchengeng.authentication.entity.AntiqueDto
 import xyz.luchengeng.authentication.entity.VerificationProcess
 import xyz.luchengeng.authentication.entity.VerificationProcessDto
+import xyz.luchengeng.authentication.except.NotFoundException
+import xyz.luchengeng.authentication.repo.AntiqueRepo
 import xyz.luchengeng.authentication.service.AntiqueService
 import xyz.luchengeng.authentication.service.SecurityService
 import xyz.luchengeng.authentication.service.VerService
 
 @RestController
 class VerController @Autowired constructor(private val antiqueService: AntiqueService,
+                                           private val antiqueRepo: AntiqueRepo,
 private val verService: VerService,
 private val securityService: SecurityService) {
     @GetMapping("/antique/needVerification/page/{pageNo}/{pageLen}")
@@ -36,5 +40,12 @@ private val securityService: SecurityService) {
     fun getVerificationsByAntiqueId(@RequestHeader("x-api-key") jwt : String, @PathVariable antiqueId : Long) : List<VerificationProcessDto>{
         val user = securityService.auth("verifyAntique",jwt)
         return antiqueService.getVerificationsByAntiqueId(antiqueId).map { it.toDto() }
+    }
+    @DeleteMapping("/antique/verification/{antiqueId}")
+    fun invalidateByAntiqueId(@RequestHeader("x-api-key") jwt : String, @PathVariable antiqueId : Long){
+        val user = securityService.auth("verifyAntique",jwt)
+        val antique = antiqueRepo.findByIdOrNull(antiqueId)?:throw NotFoundException("Antique Not Found")
+        antique.invalid = true
+        antiqueRepo.save(antique)
     }
 }

@@ -8,6 +8,7 @@ data class Antique(
         val type: AntiqueType,
         val name : String,
         val desp : String?,
+        var invalid : Boolean?,
         @OneToMany(cascade = [CascadeType.ALL]) var verificationProcesses: MutableList<VerificationProcess>?,
         @OneToOne(cascade = [CascadeType.ALL]) var user: User?,
         @Column(columnDefinition = "LONGBLOB")
@@ -26,9 +27,10 @@ data class AntiqueDto(
         val type: AntiqueType,
         val name : String,
         val desp : String?,
+        val invalid : Boolean?,
         var verificationProcesses : Int,
         val id : Long
 ){
-    constructor(antique: Antique) : this(antique.type,antique.name,antique.desp,antique.verificationProcesses?.size?:0,antique.id!!)
+    constructor(antique: Antique) : this(antique.type,antique.name,antique.desp,antique.invalid,antique.verificationProcesses?.size?:0,antique.id!!)
 }
 
