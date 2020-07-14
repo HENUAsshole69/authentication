@@ -9,11 +9,13 @@ data class Antique(
         val name : String,
         val desp : String?,
         var invalid : Boolean?,
-        @OneToMany(cascade = [CascadeType.ALL]) var verificationProcesses: MutableList<VerificationProcess>?,
-        @OneToOne(cascade = [CascadeType.ALL]) var user: User?,
+        @OneToMany(cascade = [CascadeType.ALL]) var verificationProcesses: MutableList<VerificationProcess>,
+        @OneToOne(cascade = [CascadeType.ALL]) var user: User,
         @Column(columnDefinition = "LONGBLOB")
         val pic : ByteArray
-        )
+        ){
+    constructor(antiqueDto: AntiqueDto,user : User) : this(id = null,type = antiqueDto.type,name = antiqueDto.name,desp = antiqueDto.desp,verificationProcesses = mutableListOf<VerificationProcess>(),user = user,pic=antiqueDto.pic!!,invalid = false)
+}
 
 enum class AntiqueType(s: String) {
     PORCELAIN("PORCELAIN"),
@@ -29,8 +31,9 @@ data class AntiqueDto(
         val desp : String?,
         val invalid : Boolean?,
         var verificationProcesses : Int,
+        val pic : ByteArray?,
         val id : Long
 ){
-    constructor(antique: Antique) : this(antique.type,antique.name,antique.desp,antique.invalid,antique.verificationProcesses?.size?:0,antique.id!!)
+    constructor(antique: Antique) : this(antique.type,antique.name,antique.desp,antique.invalid,antique.verificationProcesses?.size?:0,null,antique.id!!)
 }
 

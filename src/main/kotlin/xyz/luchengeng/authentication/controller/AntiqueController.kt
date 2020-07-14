@@ -29,11 +29,10 @@ class AntiqueController @Autowired constructor(private val antiqueService: Antiq
         return antiqueService.getAntiquePicById(id)
     }
     @PostMapping("/antique")
-    fun postAntique(@RequestHeader("x-api-key") jwt : String,@RequestBody antique: Antique): Antique{
+    fun postAntique(@RequestHeader("x-api-key") jwt : String,@RequestBody antique: AntiqueDto): AntiqueDto{
         val user = securityService.auth("postAntique",jwt)
-        antique.verificationProcesses = mutableListOf()
-        antique.user = user
-        return antiqueService.newAntique(antique)
+
+        return AntiqueDto(antiqueService.newAntique(Antique(antique,user)))
     }
 
     @GetMapping("/antique/{id}")

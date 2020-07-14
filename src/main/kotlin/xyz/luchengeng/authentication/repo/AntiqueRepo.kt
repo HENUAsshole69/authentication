@@ -14,7 +14,7 @@ interface AntiqueRepo : JpaRepository<Antique,Long> {
     fun findAntiqueNeedsVerification(pageable : Pageable) : Page<Antique>
     @Query("select new xyz.luchengeng.authentication.entity.AntiqueDto(a) from Antique a where a.id = ?1",countQuery = "select count(a) from Antique a where a.id = ?1")
     fun findAllDtoByUserId(id : Long,pageable : Pageable) : Page<AntiqueDto>
-    @Query("select new xyz.luchengeng.authentication.entity.AntiqueDto(a) from Antique a where not a.verificationProcesses.size = 3",countQuery = "select count(a) from Antique a where not a.verificationProcesses.size = 3")
+    @Query("select new xyz.luchengeng.authentication.entity.AntiqueDto(a) from Antique a where not size(a.verificationProcesses) = 3",countQuery = "select count(a) from Antique a where not a.verificationProcesses.size = 3")
     fun findAntiqueDtoNeedsVerification(pageable : Pageable) : Page<AntiqueDto>
     @Query("select a.pic  from Antique a where a.id = ?1")
     fun findPicById(id : Long) : ByteArray?
@@ -22,7 +22,7 @@ interface AntiqueRepo : JpaRepository<Antique,Long> {
     fun findAntiqueDtoById(id : Long) : AntiqueDto?
     @Query("select new xyz.luchengeng.authentication.entity.AntiqueDto(a) from Antique a",countQuery = "select count(a) from Antique a")
     fun findAllDto(pageable : Pageable) : Page<AntiqueDto>
-    @Query("select new xyz.luchengeng.authentication.entity.AntiqueDto(a) from Antique a where a.verificationProcesses.size = ?1",countQuery = "select count(a) from Antique a where a.verificationProcesses.size = ?1")
+    @Query("select new xyz.luchengeng.authentication.entity.AntiqueDto(a) from Antique a where size(a.verificationProcesses) = ?1",countQuery = "select count(a) from Antique a where a.verificationProcesses.size = ?1")
     fun findAntiqueDtoAtVerificationStage(stage : Int,pageable : Pageable) : Page<AntiqueDto>
     @Query("select a.verificationProcesses  from Antique a where a.id = ?1")
     fun getVerificationsByAntiqueId(id : Long) : List<VerificationProcess>
