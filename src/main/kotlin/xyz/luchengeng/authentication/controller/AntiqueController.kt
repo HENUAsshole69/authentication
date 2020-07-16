@@ -47,4 +47,8 @@ class AntiqueController @Autowired constructor(private val antiqueService: Antiq
         val user = securityService.auth("searchAntique",jwt)
         return antiqueRepo.searchDto(keyWord = key,pageable = PageRequest.of(pageNo,pageLen))
     }
+    @GetMapping("/user")
+    fun getUserObj(@RequestHeader("x-api-key") jwt : String)=
+        securityService.auth("searchAntique",jwt)
+
 }

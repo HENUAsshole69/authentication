@@ -15,7 +15,9 @@ data class User(@Id @GeneratedValue(strategy = GenerationType.IDENTITY) val id :
                 val type : UserType,
                 val name : String,
                 @OneToMany(cascade = [CascadeType.ALL]) val verificationProcesses: MutableList<VerificationProcess>,
-                @OneToOne(cascade = [CascadeType.ALL]) val info : UserInfo)
+                @OneToOne(cascade = [CascadeType.ALL]) val info : UserInfo,
+                @ElementCollection val verifiable : MutableList<VerificationProcessStage>
+                )
 
 @Entity
 data class Credential(@Id @GeneratedValue(strategy = GenerationType.IDENTITY) val id : Long?,
