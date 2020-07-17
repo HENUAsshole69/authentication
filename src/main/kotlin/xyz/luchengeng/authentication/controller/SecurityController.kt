@@ -31,7 +31,7 @@ class SecurityController @Autowired constructor(private val securityService: Sec
         val user = securityService.auth("updateVerificationAuth",jwt)
         securityService.setVerificationAuthorization(userId,verifiable)
     }
-    @GetMapping("/user/{pageNo}/{pageLen}")
+    @GetMapping("/user/page/{pageNo}/{pageLen}")
     fun getAllUser(@RequestHeader("x-api-key") jwt : String,@PathVariable pageNo : Int,@PathVariable pageLen : Int): Page<User> {
         val user = securityService.auth("updateVerificationAuth",jwt)
         return securityService.getUserPage(PageRequest.of(pageNo,pageLen))

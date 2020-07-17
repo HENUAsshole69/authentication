@@ -6,6 +6,6 @@ import xyz.luchengeng.authentication.entity.*
 class TypeScriptModelGen
     fun main(){
         print(TypeScriptGenerator(rootClasses = setOf(
-                VerificationProcessDto::class
+                LoggingEntryDto::class
         )).definitionsText)
     }

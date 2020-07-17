@@ -25,8 +25,10 @@ class SecurityService @Autowired constructor(private val authenticationService: 
         return authenticationService.tokenCreate(user.user)
     }
 
-    fun register(cred : Credential) : Credential =
-        credRepo.save(cred)
+    fun register(cred : Credential) : Credential {
+        cred.user.verifiable.clear()
+        return credRepo.save(cred)
+    }
 
 
     fun setVerificationAuthorization(userId : Long,verifiable : MutableList<VerificationProcessStage>){
