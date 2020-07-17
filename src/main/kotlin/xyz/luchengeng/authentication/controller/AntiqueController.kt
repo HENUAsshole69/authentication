@@ -17,7 +17,7 @@ class AntiqueController @Autowired constructor(private val antiqueService: Antiq
     fun getAntique(@RequestHeader("x-api-key") jwt : String,@PathVariable pageNo : Int,@PathVariable pageLen : Int) : Page<AntiqueDto> {
         val user = securityService.auth("getAntique",jwt)
         return when(user.type){
-            UserType.ADMIN,UserType.JUDICIAL_DEPT->{
+            UserType.ADMIN,UserType.JUDICIAL_DEPT,UserType.ARCH_DEPT->{
                 antiqueService.getAllAntique(pageNo, pageLen)
             }
             else->{
@@ -45,7 +45,12 @@ class AntiqueController @Autowired constructor(private val antiqueService: Antiq
     @GetMapping("/antique/search/page/{pageNo}/{pageLen}")
     fun searchAntique(@RequestHeader("x-api-key") jwt : String,@PathVariable pageNo : Int,@PathVariable pageLen : Int,@RequestParam key : String): Page<AntiqueDto>{
         val user = securityService.auth("searchAntique",jwt)
-        return antiqueRepo.searchDto(keyWord = key,pageable = PageRequest.of(pageNo,pageLen))
+        return when(user.type){
+            UserType.ADMIN,UserType.JUDICIAL_DEPT,UserType.ARCH_DEPT->
+                antiqueRepo.searchDto(keyWord = key,pageable = PageRequest.of(pageNo,pageLen))
+            else->
+                antiqueRepo.searchDtoOfUserId(keyWord = key,pageable = PageRequest.of(pageNo,pageLen),userId = user.id!!)
+        }
     }
     @GetMapping("/user")
     fun getUserObj(@RequestHeader("x-api-key") jwt : String)=

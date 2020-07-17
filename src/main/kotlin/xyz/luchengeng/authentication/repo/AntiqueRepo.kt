@@ -28,4 +28,6 @@ interface AntiqueRepo : JpaRepository<Antique,Long> {
     fun getVerificationsByAntiqueId(id : Long) : List<VerificationProcess>
     @Query("select new xyz.luchengeng.authentication.entity.AntiqueDto(a) from Antique a where a.name like %?1% or a.desp like %?1%",countQuery = "select count(a) from Antique a where a.name like %?1% or a.desp like %?1%")
     fun searchDto(keyWord : String,pageable : Pageable) : Page<AntiqueDto>
+    @Query("select new xyz.luchengeng.authentication.entity.AntiqueDto(a) from Antique a where (a.name like %?1% or a.desp like %?1%) and a.user.id = ?2",countQuery = "select count(a) from Antique a where (a.name like %?1% or a.desp like %?1%) and a.user.id = ?2")
+    fun searchDtoOfUserId(keyWord : String,userId : Long,pageable : Pageable) : Page<AntiqueDto>
 }
