@@ -12,7 +12,7 @@ enum class UserType(s: String) {
 }
 @Entity
 data class User(@Id @GeneratedValue(strategy = GenerationType.IDENTITY) val id : Long?,
-                val type : UserType,
+                var type : UserType,
                 val name : String,
                 @OneToMany(cascade = [CascadeType.ALL]) val verificationProcesses: MutableList<VerificationProcess>,
                 @OneToOne(cascade = [CascadeType.ALL]) val info : UserInfo,

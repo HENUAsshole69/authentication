@@ -8,6 +8,8 @@ import xyz.luchengeng.authentication.entity.Antique
 import xyz.luchengeng.authentication.entity.User
 
 interface UserRepo : JpaRepository<User,Long>{
-    @Query("select u from User u where not size(u.verificationProcesses) = 0")
+    @Query("select u from User u where not size(u.verificationProcesses) = 3")
     fun findUserNeedsVerification(pageable : Pageable) : Page<User>
+    @Query("select u from User u where u.name like %?1%")
+    fun findUserByName(keyWord : String,pageable : Pageable) : Page<User>
 }

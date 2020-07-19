@@ -25,6 +25,18 @@ class AntiqueController @Autowired constructor(private val antiqueService: Antiq
             }
         }
     }
+    @PostMapping("/antique/cert/{id}")
+    fun postCertForAntique(@RequestHeader("x-api-key") jwt : String,@PathVariable id : Long, @RequestBody cert : ByteArray){
+        val user = securityService.auth("postCertForAntique",jwt)
+        antiqueService.saveCertForAntique(id,cert)
+    }
+
+    @GetMapping("/antique/cert/{id}")
+    fun getAntiqueCert(@RequestHeader("x-api-key") jwt : String,@PathVariable id : Long) : ByteArray{
+        val user = securityService.auth("getAntiqueCert",jwt)
+        return antiqueService.getCertForAntique(id)
+    }
+
     @GetMapping("/antique/pic/{id}")
     fun getAntiquePic(@RequestHeader("x-api-key") jwt : String,@PathVariable id : Long) : ByteArray{
         val user = securityService.auth("getAntiquePic",jwt)

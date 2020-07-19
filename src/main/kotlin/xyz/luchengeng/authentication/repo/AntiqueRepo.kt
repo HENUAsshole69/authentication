@@ -12,7 +12,7 @@ interface AntiqueRepo : JpaRepository<Antique,Long> {
     fun findAllByUserId(id : Long,pageable : Pageable) : Page<Antique>
     @Query("select a from Antique a where not count(a.verificationProcesses) = 3")
     fun findAntiqueNeedsVerification(pageable : Pageable) : Page<Antique>
-    @Query("select new xyz.luchengeng.authentication.entity.AntiqueDto(a) from Antique a where a.id = ?1",countQuery = "select count(a) from Antique a where a.id = ?1")
+    @Query("select new xyz.luchengeng.authentication.entity.AntiqueDto(a) from Antique a where a.user.id = ?1",countQuery = "select count(a) from Antique a where a.user.id = ?1")
     fun findAllDtoByUserId(id : Long,pageable : Pageable) : Page<AntiqueDto>
     @Query("select new xyz.luchengeng.authentication.entity.AntiqueDto(a) from Antique a where not size(a.verificationProcesses) = 3 and a.invalid = false",countQuery = "select count(a) from Antique a where not a.verificationProcesses.size = 3")
     fun findAntiqueDtoNeedsVerification(pageable : Pageable) : Page<AntiqueDto>

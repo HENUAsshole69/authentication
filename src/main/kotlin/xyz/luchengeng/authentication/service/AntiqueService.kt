@@ -3,12 +3,15 @@ package xyz.luchengeng.authentication.service
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.PageRequest
+import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
 import xyz.luchengeng.authentication.entity.Antique
 import xyz.luchengeng.authentication.entity.AntiqueDto
 import xyz.luchengeng.authentication.entity.User
 import xyz.luchengeng.authentication.except.NotFoundException
 import xyz.luchengeng.authentication.repo.AntiqueRepo
+import javax.print.DocFlavor
+
 @Service
 class AntiqueService @Autowired constructor(private val antiqueRepo: AntiqueRepo) {
     fun getAntiqueOfUser(user : User,pageNo : Int,pageLen : Int) : Page<AntiqueDto>{
@@ -36,4 +39,14 @@ class AntiqueService @Autowired constructor(private val antiqueRepo: AntiqueRepo
     fun getVerificationsByAntiqueId(antiqueId : Long)=
         antiqueRepo.getVerificationsByAntiqueId(antiqueId)
 
+    fun saveCertForAntique(antiqueId: Long,cert:ByteArray) {
+        val antique = antiqueRepo.findByIdOrNull(antiqueId) ?: throw NotFoundException("Obj Not Found")
+        antique.cert = cert
+        antiqueRepo.save(antique)
+    }
+
+    fun getCertForAntique(antiqueId: Long) : ByteArray{
+        val antique = antiqueRepo.findByIdOrNull(antiqueId) ?: throw NotFoundException("Obj Not Found")
+        return antique.cert?: throw NotFoundException("Cert Not Found")
+    }
 }

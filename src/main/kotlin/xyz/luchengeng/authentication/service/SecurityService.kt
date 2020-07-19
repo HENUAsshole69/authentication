@@ -3,18 +3,23 @@ package xyz.luchengeng.authentication.service
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
-import xyz.luchengeng.authentication.entity.Credential
-import xyz.luchengeng.authentication.entity.User
-import xyz.luchengeng.authentication.entity.VerificationProcessStage
+import xyz.luchengeng.authentication.entity.*
 import xyz.luchengeng.authentication.except.NotAuthorizedException
 import xyz.luchengeng.authentication.except.NotFoundException
 import xyz.luchengeng.authentication.repo.CredRepo
 import xyz.luchengeng.authentication.repo.UserRepo
 import java.awt.print.Pageable
+import javax.annotation.PostConstruct
 
 
 @Service
 class SecurityService @Autowired constructor(private val authenticationService: AuthenticationService,private val authorizationService: AuthorizationService,private val credRepo: CredRepo,private val userRepo: UserRepo) {
+    @PostConstruct
+    private fun createAdminUser(){
+        if(userRepo.count() == 0L){
+            credRepo.save(Credential(null,User(id=null,type = UserType.ADMIN,name = "admin",verificationProcesses = mutableListOf(), info = UserInfo(null,"","admin"),verifiable = mutableListOf()),"admin"))
+        }
+    }
     fun auth(obj : String,token : String) : User{
         val user = authenticationService.tokenVerify(token)
         authorizationService(obj, user)
@@ -40,9 +45,18 @@ class SecurityService @Autowired constructor(private val authenticationService: 
         userRepo.save(user)
     }
 
+    fun setUserRole(userId : Long,type : UserType){
+        val user = userRepo.findByIdOrNull(userId)?:throw NotFoundException("User Not Found")
+        user.type = type
+        userRepo.save(user)
+    }
+
     fun getUserPage(pageable: org.springframework.data.domain.Pageable) =
         userRepo.findAll(
                 pageable
         )
+
+    fun searchUser(keyWord : String,pageable: org.springframework.data.domain.Pageable) =
+            userRepo.findUserByName(keyWord, pageable)
 
 }
