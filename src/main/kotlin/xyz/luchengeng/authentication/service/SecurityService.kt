@@ -6,14 +6,16 @@ import org.springframework.stereotype.Service
 import xyz.luchengeng.authentication.entity.*
 import xyz.luchengeng.authentication.except.NotAuthorizedException
 import xyz.luchengeng.authentication.except.NotFoundException
+import xyz.luchengeng.authentication.repo.AntiqueRepo
 import xyz.luchengeng.authentication.repo.CredRepo
 import xyz.luchengeng.authentication.repo.UserRepo
+import xyz.luchengeng.authentication.repo.VerRepo
 import java.awt.print.Pageable
 import javax.annotation.PostConstruct
 
 
 @Service
-class SecurityService @Autowired constructor(private val authenticationService: AuthenticationService,private val authorizationService: AuthorizationService,private val credRepo: CredRepo,private val userRepo: UserRepo) {
+class SecurityService @Autowired constructor(private val verRepo: VerRepo,private val antiqueRepo: AntiqueRepo,private val authenticationService: AuthenticationService,private val authorizationService: AuthorizationService,private val credRepo: CredRepo,private val userRepo: UserRepo) {
     @PostConstruct
     private fun createAdminUser(){
         if(userRepo.count() == 0L){
@@ -60,10 +62,21 @@ class SecurityService @Autowired constructor(private val authenticationService: 
             userRepo.findUserByName(keyWord, pageable)
 
     fun delUser(userId : Long){
-            credRepo.delUserById(userId)
+            val cred = credRepo.findCredByUserId(userId)?:throw NotFoundException("Credential Not Found")
+            val antiques = antiqueRepo.findAllByUserId(userId, org.springframework.data.domain.Pageable.unpaged())
+            antiques.content.forEach { antique ->
+                antique.verificationProcesses.forEach {
+                    verRepo.deleteById(it.id!!)
+                }
+            }
+            antiqueRepo.deleteAll(antiques.content)
+            credRepo.delete(cred)
+            userRepo.delete(cred.user)
     }
 
     fun updatePassword(userId : Long,password: String){
-        credRepo.updatePassword(userId, password)
+        val cred = credRepo.findCredByUserId(userId)?:throw NotFoundException("Credential Not Found")
+        cred.password = password
+        credRepo.save(cred)
     }
 }

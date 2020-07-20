@@ -9,14 +9,16 @@ data class Antique(
         val name : String,
         val desp : String,
         var invalid : Boolean,
-        @OneToMany(cascade = [CascadeType.ALL]) val verificationProcesses: MutableList<VerificationProcess>,
-        @OneToOne(cascade = [CascadeType.ALL]) val user: User,
+        @OneToMany(cascade = [CascadeType.PERSIST]) val verificationProcesses: MutableList<VerificationProcess>,
+        @OneToOne(cascade = [CascadeType.PERSIST]) val user: User,
         @Column(columnDefinition = "LONGBLOB")
         val pic : ByteArray,
         @Column(columnDefinition = "LONGBLOB")
-        var cert : ByteArray?
+        var cert : ByteArray?,
+        @OneToOne(cascade = [CascadeType.PERSIST])
+        var wearAndTear: WearAndTear?
         ){
-    constructor(antiqueDto: AntiqueDto,user : User) : this(id = null,type = antiqueDto.type,name = antiqueDto.name,desp = antiqueDto.desp,verificationProcesses = mutableListOf<VerificationProcess>(),user = user,pic=antiqueDto.pic!!,invalid = false,cert = null)
+    constructor(antiqueDto: AntiqueDto,user : User) : this(id = null,type = antiqueDto.type,name = antiqueDto.name,desp = antiqueDto.desp,verificationProcesses = mutableListOf<VerificationProcess>(),user = user,pic=antiqueDto.pic!!,invalid = false,cert = null,wearAndTear = null)
 }
 
 enum class AntiqueType(s: String) {
@@ -35,8 +37,9 @@ data class AntiqueDto(
         var verificationProcesses : Int,
         val pic : ByteArray?,
         val userName : String?,
-        val id : Long
+        val id : Long,
+        var wearAndTear: WearAndTear?
 ){
-    constructor(antique: Antique) : this(antique.type,antique.name,antique.desp,antique.invalid,antique.verificationProcesses.size?:0,null,antique.user.name,antique.id!!)
+    constructor(antique: Antique) : this(antique.type,antique.name,antique.desp,antique.invalid,antique.verificationProcesses.size?:0,null,antique.user.name,antique.id!!,wearAndTear=antique.wearAndTear)
 }
 

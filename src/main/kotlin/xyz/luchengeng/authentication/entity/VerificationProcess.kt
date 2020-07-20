@@ -6,7 +6,7 @@ import javax.persistence.*
 @Entity
 data class VerificationProcess(
         @Id @GeneratedValue(strategy = GenerationType.IDENTITY) val id : Long?,
-        @OneToOne(cascade = [CascadeType.ALL]) val user : User,
+        @OneToOne(cascade = [CascadeType.PERSIST]) val user : User,
         val time : LocalDateTime,
         val content : String,
         val stage : VerificationProcessStage

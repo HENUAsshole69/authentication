@@ -4,8 +4,8 @@ import me.ntrrgc.tsGenerator.TypeScriptGenerator
 import xyz.luchengeng.authentication.entity.*
 
 class TypeScriptModelGen
-    fun gen(){
+    fun main(){
         print(TypeScriptGenerator(rootClasses = setOf(
-                LoggingEntryDto::class
+                WearAndTear::class
         )).definitionsText)
     }

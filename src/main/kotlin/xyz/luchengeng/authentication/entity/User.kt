@@ -15,15 +15,15 @@ enum class UserType(s: String) {
 data class User(@Id @GeneratedValue(strategy = GenerationType.IDENTITY) val id : Long?,
                 var type : UserType,
                 val name : String,
-                @OneToMany(cascade = [CascadeType.ALL]) val verificationProcesses: MutableList<VerificationProcess>,
-                @OneToOne(cascade = [CascadeType.ALL]) val info : UserInfo,
+                @OneToMany(cascade = [CascadeType.PERSIST]) val verificationProcesses: MutableList<VerificationProcess>,
+                @OneToOne(cascade = [CascadeType.PERSIST]) val info : UserInfo,
                 @ElementCollection val verifiable : MutableList<VerificationProcessStage>
                 )
 
 @Entity
 data class Credential(@Id @GeneratedValue(strategy = GenerationType.IDENTITY) val id : Long?,
-                      @OneToOne(cascade = [CascadeType.ALL]) val user : User,
-                      val password : String
+                      @OneToOne(cascade = [CascadeType.PERSIST]) val user : User,
+                      var password : String
                       )
 @Entity
 data class UserInfo(

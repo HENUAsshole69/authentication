@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service
 import xyz.luchengeng.authentication.entity.Antique
 import xyz.luchengeng.authentication.entity.AntiqueDto
 import xyz.luchengeng.authentication.entity.User
+import xyz.luchengeng.authentication.entity.WearAndTear
 import xyz.luchengeng.authentication.except.NotFoundException
 import xyz.luchengeng.authentication.repo.AntiqueRepo
 import javax.print.DocFlavor
@@ -48,5 +49,11 @@ class AntiqueService @Autowired constructor(private val antiqueRepo: AntiqueRepo
     fun getCertForAntique(antiqueId: Long) : ByteArray{
         val antique = antiqueRepo.findByIdOrNull(antiqueId) ?: throw NotFoundException("Obj Not Found")
         return antique.cert?: throw NotFoundException("Cert Not Found")
+    }
+
+    fun saveWearAndTear(antiqueId: Long,wearAndTear: WearAndTear){
+        val antique = antiqueRepo.findByIdOrNull(antiqueId) ?: throw NotFoundException("Obj Not Found")
+        antique.wearAndTear = wearAndTear
+        antiqueRepo.save(antique)
     }
 }

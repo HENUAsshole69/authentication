@@ -6,8 +6,6 @@ import xyz.luchengeng.authentication.entity.Credential
 
 interface CredRepo : JpaRepository<Credential,Long> {
     fun findFirstByUserNameAndPassword(userName : String,password : String) : Credential?
-    @Query("delete from Credential c where c.user.id = ?1")
-    fun delUserById(userId : Long)
-    @Query("update Credential c set c.password=?2 where c.user.id = ?1")
-    fun updatePassword(userId: Long,password: String)
+    @Query("select c from Credential c where c.user.id = ?1")
+    fun findCredByUserId(userId : Long) : Credential?
 }

@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.*
 import xyz.luchengeng.authentication.entity.Antique
 import xyz.luchengeng.authentication.entity.AntiqueDto
 import xyz.luchengeng.authentication.entity.UserType
+import xyz.luchengeng.authentication.entity.WearAndTear
 import xyz.luchengeng.authentication.repo.AntiqueRepo
 import xyz.luchengeng.authentication.service.AntiqueService
 import xyz.luchengeng.authentication.service.SecurityService
@@ -68,5 +69,11 @@ class AntiqueController @Autowired constructor(private val antiqueService: Antiq
     @GetMapping("/user")
     fun getUserObj(@RequestHeader("x-api-key") jwt : String)=
         securityService.auth("getUserObj",jwt)
+
+    @PostMapping("/antique/wearAndTear/{id}")
+    fun postWearAndTearForAntique(@RequestHeader("x-api-key") jwt : String,@PathVariable id : Long, @RequestBody wearAndTear: WearAndTear){
+        val user = securityService.auth("postWearAndTearForAntique",jwt)
+        antiqueService.saveWearAndTear(id,wearAndTear)
+    }
 
 }
