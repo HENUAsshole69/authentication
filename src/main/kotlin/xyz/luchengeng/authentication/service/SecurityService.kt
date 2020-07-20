@@ -59,4 +59,11 @@ class SecurityService @Autowired constructor(private val authenticationService: 
     fun searchUser(keyWord : String,pageable: org.springframework.data.domain.Pageable) =
             userRepo.findUserByName(keyWord, pageable)
 
+    fun delUser(userId : Long){
+            credRepo.delUserById(userId)
+    }
+
+    fun updatePassword(userId : Long,password: String){
+        credRepo.updatePassword(userId, password)
+    }
 }

@@ -8,7 +8,8 @@ enum class UserType(s: String) {
     ANTIQUE_STORE("ANTIQUE_STORE"),
     ARCH_DEPT("ARCH_DEPT"),
     JUDICIAL_DEPT("JUDICIAL_DEPT"),
-    ADMIN("ADMIN")
+    ADMIN("ADMIN"),
+    AUTH_CENTER("AUTH_CENTER")
 }
 @Entity
 data class User(@Id @GeneratedValue(strategy = GenerationType.IDENTITY) val id : Long?,

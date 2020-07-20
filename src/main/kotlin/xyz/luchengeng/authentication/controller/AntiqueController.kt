@@ -3,6 +3,7 @@ package xyz.luchengeng.authentication.controller
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.PageRequest
+import org.springframework.stereotype.Controller
 import org.springframework.web.bind.annotation.*
 import xyz.luchengeng.authentication.entity.Antique
 import xyz.luchengeng.authentication.entity.AntiqueDto
@@ -66,6 +67,6 @@ class AntiqueController @Autowired constructor(private val antiqueService: Antiq
     }
     @GetMapping("/user")
     fun getUserObj(@RequestHeader("x-api-key") jwt : String)=
-        securityService.auth("searchAntique",jwt)
+        securityService.auth("getUserObj",jwt)
 
 }

@@ -33,17 +33,28 @@ class SecurityController @Autowired constructor(private val securityService: Sec
     }
     @PutMapping("/user/type/{userId}")
     fun updateType(@RequestHeader("x-api-key") jwt : String,@PathVariable userId : Long, @RequestParam type : UserType){
-        val user = securityService.auth("updateVerificationAuth",jwt)
+        val user = securityService.auth("updateType",jwt)
         securityService.setUserRole(userId, type)
     }
     @GetMapping("/user/page/{pageNo}/{pageLen}")
     fun getAllUser(@RequestHeader("x-api-key") jwt : String,@PathVariable pageNo : Int,@PathVariable pageLen : Int): Page<User> {
-        val user = securityService.auth("updateVerificationAuth",jwt)
+        val user = securityService.auth("getAllUser",jwt)
         return securityService.getUserPage(PageRequest.of(pageNo,pageLen))
     }
     @GetMapping("/user/search/page/{pageNo}/{pageLen}")
     fun searchUser(@RequestHeader("x-api-key") jwt : String,@PathVariable pageNo : Int,@PathVariable pageLen : Int,@RequestParam key : String): Page<User>{
-        val user = securityService.auth("updateVerificationAuth",jwt)
+        val user = securityService.auth("searchUser",jwt)
         return securityService.searchUser(key,PageRequest.of(pageNo,pageLen))
     }
+    @DeleteMapping("/user/{id}")
+    fun delUser(@RequestHeader("x-api-key") jwt : String,@PathVariable id : Long){
+        val user = securityService.auth("delUser",jwt)
+        securityService.delUser(id)
+    }
+    @PutMapping("/user/password/{userId}")
+    fun updatePassword(@RequestHeader("x-api-key") jwt : String,@PathVariable userId : Long, @RequestParam password : String){
+        val user = securityService.auth("updatePassword",jwt)
+        securityService.updatePassword(userId, password)
+    }
+
 }

@@ -38,12 +38,12 @@ private val securityService: SecurityService) {
     }
     @GetMapping("/antique/verification/{antiqueId}")
     fun getVerificationsByAntiqueId(@RequestHeader("x-api-key") jwt : String, @PathVariable antiqueId : Long) : List<VerificationProcessDto>{
-        val user = securityService.auth("verifyAntique",jwt)
+        val user = securityService.auth("getVerificationsByAntiqueId",jwt)
         return antiqueService.getVerificationsByAntiqueId(antiqueId).map { it.toDto() }
     }
     @DeleteMapping("/antique/verification/{antiqueId}")
     fun invalidateByAntiqueId(@RequestHeader("x-api-key") jwt : String, @PathVariable antiqueId : Long){
-        val user = securityService.auth("verifyAntique",jwt)
+        val user = securityService.auth("invalidateByAntiqueId",jwt)
         val antique = antiqueRepo.findByIdOrNull(antiqueId)?:throw NotFoundException("Antique Not Found")
         antique.invalid = true
         antiqueRepo.save(antique)
