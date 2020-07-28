@@ -54,7 +54,15 @@ class SecurityController @Autowired constructor(private val securityService: Sec
     @PutMapping("/user/password/{userId}")
     fun updatePassword(@RequestHeader("x-api-key") jwt : String,@PathVariable userId : Long, @RequestParam password : String){
         val user = securityService.auth("updatePassword",jwt)
-        securityService.updatePassword(userId, password)
+        when{
+            user.type === UserType.ADMIN->{
+                securityService.updatePassword(userId, password)
+            }
+            else->{
+                if(userId != user.id) throw NotAuthorizedException("non admin user can only mod its own password")
+                securityService.updatePassword(userId, password)
+            }
+        }
     }
 
 }

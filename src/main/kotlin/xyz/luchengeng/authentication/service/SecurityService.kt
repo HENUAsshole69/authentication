@@ -20,6 +20,12 @@ class SecurityService @Autowired constructor(private val verRepo: VerRepo,privat
     private fun createAdminUser(){
         if(userRepo.count() == 0L){
             credRepo.save(Credential(null,User(id=null,type = UserType.ADMIN,name = "admin",verificationProcesses = mutableListOf(), info = UserInfo(null,"","admin"),verifiable = mutableListOf()),"admin"))
+            credRepo.save(Credential(null,User(id=null,type = UserType.ARCH_DEPT,name = "考古部门用户",verificationProcesses = mutableListOf(), info = UserInfo(null,"","考古部门用户"),verifiable = mutableListOf()),"123456"))
+            credRepo.save(Credential(null,User(id=null,type = UserType.JUDICIAL_DEPT,name = "司法部门用户",verificationProcesses = mutableListOf(), info = UserInfo(null,"","司法部门用户"),verifiable = mutableListOf()),"123456"))
+            credRepo.save(Credential(null,User(id=null,type = UserType.ANTIQUE_STORE,name = "文物商店用户",verificationProcesses = mutableListOf(), info = UserInfo(null,"","文物商店用户"),verifiable = mutableListOf()),"123456"))
+            credRepo.save(Credential(null,User(id=null,type = UserType.AUCTIONEER,name = "拍卖行用户",verificationProcesses = mutableListOf(), info = UserInfo(null,"","拍卖行用户"),verifiable = mutableListOf()),"123456"))
+            credRepo.save(Credential(null,User(id=null,type = UserType.AUTH_CENTER,name = "认证中心用户",verificationProcesses = mutableListOf(), info = UserInfo(null,"","认证中心用户"),verifiable = mutableListOf()),"123456"))
+
         }
     }
     fun auth(obj : String,token : String) : User{
