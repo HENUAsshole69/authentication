@@ -3,27 +3,32 @@ package xyz.luchengeng.authentication.controller
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.PageRequest
+import org.springframework.format.annotation.DateTimeFormat
 import org.springframework.stereotype.Controller
 import org.springframework.web.bind.annotation.*
-import xyz.luchengeng.authentication.entity.Antique
-import xyz.luchengeng.authentication.entity.AntiqueDto
-import xyz.luchengeng.authentication.entity.UserType
-import xyz.luchengeng.authentication.entity.WearAndTear
+import xyz.luchengeng.authentication.entity.*
 import xyz.luchengeng.authentication.repo.AntiqueRepo
 import xyz.luchengeng.authentication.service.AntiqueService
+import xyz.luchengeng.authentication.service.InventoryService
 import xyz.luchengeng.authentication.service.SecurityService
+import java.time.LocalDate
 
 @RestController
-class AntiqueController @Autowired constructor(private val antiqueService: AntiqueService,private val securityService: SecurityService,private val antiqueRepo: AntiqueRepo) {
+class AntiqueController @Autowired constructor(private val antiqueService: AntiqueService,private val securityService: SecurityService,private val antiqueRepo: AntiqueRepo,private val inventoryService: InventoryService) {
     @GetMapping("/antique/page/{pageNo}/{pageLen}")
-    fun getAntique(@RequestHeader("x-api-key") jwt : String,@PathVariable pageNo : Int,@PathVariable pageLen : Int) : Page<AntiqueDto> {
+    fun getAntique(@RequestHeader("x-api-key") jwt : String,
+                   @PathVariable pageNo : Int,
+                   @PathVariable pageLen : Int,
+                   @RequestParam @DateTimeFormat(iso=DateTimeFormat.ISO.DATE) from : LocalDate,
+                   @RequestParam @DateTimeFormat(iso=DateTimeFormat.ISO.DATE)  to: LocalDate
+                   ) : Page<AntiqueDto> {
         val user = securityService.auth("getAntique",jwt)
         return when(user.type){
             UserType.ADMIN,UserType.JUDICIAL_DEPT,UserType.ARCH_DEPT->{
-                antiqueService.getAllAntique(pageNo, pageLen)
+                antiqueService.getAllAntique(pageNo, pageLen,from, to)
             }
             else->{
-                antiqueService.getAntiqueOfUser(user,pageNo, pageLen)
+                antiqueService.getAntiqueOfUser(user,pageNo, pageLen,from, to)
             }
         }
     }
@@ -47,8 +52,18 @@ class AntiqueController @Autowired constructor(private val antiqueService: Antiq
     @PostMapping("/antique")
     fun postAntique(@RequestHeader("x-api-key") jwt : String,@RequestBody antique: AntiqueDto): AntiqueDto{
         val user = securityService.auth("postAntique",jwt)
+        return AntiqueDto(antiqueService.newAntique(antique))
+    }
+    @PostMapping("/antique/{id}/owner/individual")
+    fun postAntiqueIndividualOwner(@RequestHeader("x-api-key") jwt : String,@PathVariable id : Long,@RequestBody applierInfo : IndividualApplierInfo){
+        val user = securityService.auth("postAntiqueIndividualOwner",jwt)
+        antiqueService.setAntiqueOwner(id,applierInfo)
+    }
 
-        return AntiqueDto(antiqueService.newAntique(Antique(antique,user)))
+    @PostMapping("/antique/{id}/owner/enterprise")
+    fun postAntiqueEnterpriseOwner(@RequestHeader("x-api-key") jwt : String,@PathVariable id : Long,@RequestBody applierInfo : EnterpriseApplierInfo){
+        val user = securityService.auth("postAntiqueEnterpriseOwner",jwt)
+        antiqueService.setAntiqueOwner(id,applierInfo)
     }
 
     @GetMapping("/antique/{id}")
@@ -57,23 +72,41 @@ class AntiqueController @Autowired constructor(private val antiqueService: Antiq
         return antiqueService.getAntiqueDtoById(id)
     }
     @GetMapping("/antique/search/page/{pageNo}/{pageLen}")
-    fun searchAntique(@RequestHeader("x-api-key") jwt : String,@PathVariable pageNo : Int,@PathVariable pageLen : Int,@RequestParam key : String): Page<AntiqueDto>{
+    fun searchAntique(@RequestHeader("x-api-key") jwt : String,
+                      @PathVariable pageNo : Int,
+                      @PathVariable pageLen : Int,
+                      @RequestParam key : String,
+                      @RequestParam(required = false) @DateTimeFormat(iso=DateTimeFormat.ISO.DATE) from : LocalDate,
+                      @RequestParam(required = false) @DateTimeFormat(iso=DateTimeFormat.ISO.DATE)  to: LocalDate): Page<AntiqueDto>{
         val user = securityService.auth("searchAntique",jwt)
         return when(user.type){
             UserType.ADMIN,UserType.JUDICIAL_DEPT,UserType.ARCH_DEPT->
-                antiqueRepo.searchDto(keyWord = key,pageable = PageRequest.of(pageNo,pageLen))
+                antiqueRepo.searchDto(key,java.sql.Date.valueOf(from),java.sql.Date.valueOf(to), PageRequest.of(pageNo,pageLen))
             else->
-                antiqueRepo.searchDtoOfUserId(keyWord = key,pageable = PageRequest.of(pageNo,pageLen),userId = user.id!!)
+                antiqueRepo.searchDtoOfUserId(key,user.id!!,java.sql.Date.valueOf(from),java.sql.Date.valueOf(to),PageRequest.of(pageNo,pageLen))
         }
     }
-    @GetMapping("/user")
-    fun getUserObj(@RequestHeader("x-api-key") jwt : String)=
-        securityService.auth("getUserObj",jwt)
+
 
     @PostMapping("/antique/wearAndTear/{id}")
     fun postWearAndTearForAntique(@RequestHeader("x-api-key") jwt : String,@PathVariable id : Long, @RequestBody wearAndTear: WearAndTear){
         val user = securityService.auth("postWearAndTearForAntique",jwt)
         antiqueService.saveWearAndTear(id,wearAndTear)
+    }
+    @PostMapping("/antique/{id}/inventory")
+    fun postAntiqueInventory(@RequestHeader("x-api-key") jwt : String,@PathVariable id : Long,@RequestBody inventoryDto: InventoryDto){
+        val user = securityService.auth("postAntiqueInventory",jwt)
+        inventoryService.createInventoryForId(id, inventoryDto)
+    }
+    @GetMapping("/antique/{id}/inventory")
+    fun getAntiqueInventory(@RequestHeader("x-api-key") jwt : String,@PathVariable id : Long) : InventoryDto{
+        val user = securityService.auth("getAntiqueInventory",jwt)
+        return inventoryService.findDtoByAntiqueId(id)
+    }
+    @GetMapping("/antique/{id}/inventory/file")
+    fun getAntiqueInventoryFileList(@RequestHeader("x-api-key") jwt : String,@PathVariable id : Long): List<File>{
+        val user = securityService.auth("getAntiqueInventoryFileList",jwt)
+        return inventoryService.findFileForAntiqueInventory(id)
     }
 
 }

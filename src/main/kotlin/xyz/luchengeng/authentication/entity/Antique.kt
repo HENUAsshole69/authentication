@@ -1,5 +1,8 @@
 package xyz.luchengeng.authentication.entity
 
+import java.time.LocalDate
+import java.time.LocalDateTime
+import java.util.*
 import javax.persistence.*
 
 @Entity
@@ -10,15 +13,20 @@ data class Antique(
         val desp : String,
         var invalid : Boolean,
         @OneToMany(cascade = [CascadeType.PERSIST]) val verificationProcesses: MutableList<VerificationProcess>,
-        @OneToOne(cascade = [CascadeType.PERSIST]) val user: User,
+        @OneToOne(cascade = [CascadeType.PERSIST]) val user: User?,
         @Column(columnDefinition = "LONGBLOB")
-        val pic : ByteArray,
+        val pic : UUID,
         @Column(columnDefinition = "LONGBLOB")
-        var cert : ByteArray?,
+        var cert : UUID?,
         @OneToOne(cascade = [CascadeType.PERSIST])
-        var wearAndTear: WearAndTear?
+        var wearAndTear: WearAndTear?,
+        @OneToOne(cascade = [CascadeType.PERSIST])
+        var owner : ApplierInfo?,
+        @Temporal(TemporalType.DATE)
+        val date : Date = java.sql.Date.valueOf(LocalDate.now())
         ){
-    constructor(antiqueDto: AntiqueDto,user : User) : this(id = null,type = antiqueDto.type,name = antiqueDto.name,desp = antiqueDto.desp,verificationProcesses = mutableListOf<VerificationProcess>(),user = user,pic=antiqueDto.pic!!,invalid = false,cert = null,wearAndTear = null)
+    constructor(antiqueDto: AntiqueDto,picId : UUID) : this(id = null,type = antiqueDto.type,name = antiqueDto.name,desp = antiqueDto.desp,verificationProcesses = mutableListOf<VerificationProcess>(),user = null,pic=picId,invalid = false,cert = null,wearAndTear = null,owner = null)
+    constructor(antiqueDto: AntiqueDto,user : User,picId : UUID) : this(id = null,type = antiqueDto.type,name = antiqueDto.name,desp = antiqueDto.desp,verificationProcesses = mutableListOf<VerificationProcess>(),user = user,pic=picId,invalid = false,cert = null,wearAndTear = null,owner = null)
 }
 
 enum class AntiqueType(s: String) {
@@ -38,8 +46,9 @@ data class AntiqueDto(
         val pic : ByteArray?,
         val userName : String?,
         val id : Long,
-        var wearAndTear: WearAndTear?
+        var wearAndTear: WearAndTear?,
+        val owner : ApplierInfo?
 ){
-    constructor(antique: Antique) : this(antique.type,antique.name,antique.desp,antique.invalid,antique.verificationProcesses.size?:0,null,antique.user.name,antique.id!!,wearAndTear=antique.wearAndTear)
+    constructor(antique: Antique) : this(antique.type,antique.name,antique.desp,antique.invalid,antique.verificationProcesses.size?:0,null,antique.user?.name,antique.id!!,wearAndTear=antique.wearAndTear,owner = antique.owner)
 }
 

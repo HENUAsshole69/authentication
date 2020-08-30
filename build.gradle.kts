@@ -13,8 +13,10 @@ version = "0.0.1-SNAPSHOT"
 java.sourceCompatibility = JavaVersion.VERSION_1_8
 
 repositories {
-    maven("https://jitpack.io")
     mavenCentral()
+    flatDir{
+        dirs("lib")
+    }
 }
 
 dependencies {
@@ -23,10 +25,11 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-aop")
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
     implementation("org.jetbrains.kotlin:kotlin-reflect")
+    implementation("io.minio:minio:6.0.13")
     implementation("com.auth0:java-jwt:3.9.0")
-    implementation("com.github.ntrrgc:ts-generator:1.1.1")
     implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
     runtimeOnly("mysql:mysql-connector-java")
+    implementation(files("lib/minio-starter-3.1-SNAPSHOT.jar"))
     testImplementation("org.springframework.boot:spring-boot-starter-test") {
         exclude(group = "org.junit.vintage", module = "junit-vintage-engine")
     }
