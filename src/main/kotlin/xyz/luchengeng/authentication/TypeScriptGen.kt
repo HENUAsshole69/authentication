@@ -9,7 +9,7 @@ import java.time.LocalDate
 import java.time.LocalDateTime
 import java.util.*
 
-fun main(){
+fun gen(){
     println(TypeScriptGenerator(
             rootClasses = setOf(
                     Antique::class,
