@@ -8,19 +8,21 @@ data class Inventory (
         @Id @GeneratedValue(strategy = GenerationType.IDENTITY) val id : Long?,
         val requisitionTime : LocalDateTime,
         val requisitionStatus: String,
+        val text: String,
         @OneToMany(cascade = [CascadeType.ALL]) val files: MutableList<File>,
         @OneToOne val antique: Antique
 ){
     fun toDto() : InventoryDto{
-        return InventoryDto(this.requisitionTime,this.requisitionStatus)
+        return InventoryDto(this.requisitionTime,this.requisitionStatus,this.text)
     }
 }
 
 data class InventoryDto(
                         val requisitionTime : LocalDateTime,
-                        val requisitionStatus: String
+                        val requisitionStatus: String,
+                        val text: String
                         ){
     fun toEntity(antique: Antique) : Inventory{
-        return Inventory(null, LocalDateTime.now(),this.requisitionStatus, mutableListOf(),antique)
+        return Inventory(null, LocalDateTime.now(),this.requisitionStatus, text,mutableListOf(),antique)
     }
 }

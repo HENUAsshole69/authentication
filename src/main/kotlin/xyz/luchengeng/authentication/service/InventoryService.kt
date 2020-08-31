@@ -46,6 +46,7 @@ class InventoryService @Autowired constructor(private val  inventoryRepo: Invent
         }
     }
 
+
     fun addFileForAntiqueInventory(id : Long,file : MultipartFile,fileName : String){
 
         modInventoryByAntiqueId(id){

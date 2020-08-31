@@ -19,7 +19,7 @@ interface AntiqueRepo : JpaRepository<Antique,Long> {
     @Query("select new xyz.luchengeng.authentication.entity.AntiqueDto(a) from Antique a where not size(a.verificationProcesses) = 3 and a.invalid = false",countQuery = "select count(a) from Antique a where not a.verificationProcesses.size = 3")
     fun findAntiqueDtoNeedsVerification(pageable : Pageable) : Page<AntiqueDto>
     @Query("select a.pic  from Antique a where a.id = ?1")
-    fun findPicById(id : Long) : ByteArray?
+    fun findPicById(id : Long) : UUID?
     @Query("select new xyz.luchengeng.authentication.entity.AntiqueDto(a) from Antique a where  a.id = ?1")
     fun findAntiqueDtoById(id : Long) : AntiqueDto?
     @Query("select new xyz.luchengeng.authentication.entity.AntiqueDto(a) from Antique a where a.date between ?1 and ?2",countQuery = "select count(a) from Antique a where a.date between ?1 and ?2")

@@ -26,6 +26,10 @@ class ContentService @Autowired constructor(private val map: ObjectMap,private v
         map.remove(id.toString())
     }
 
+    fun delContent(id : Long){
+        map.remove(id.toString())
+    }
+
     fun saveContent(file : MultipartFile,id:Long){
         rawClient.putObject(bucketName,id.toString(),file.inputStream,file.size,file.contentType)
 

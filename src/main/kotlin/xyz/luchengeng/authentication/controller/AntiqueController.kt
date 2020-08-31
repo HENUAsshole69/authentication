@@ -23,7 +23,7 @@ class AntiqueController @Autowired constructor(private val antiqueService: Antiq
                    ) : Page<AntiqueDto> {
         val user = securityService.auth("getAntique",jwt)
         return when(user.type){
-            UserType.ADMIN,UserType.JUDICIAL_DEPT,UserType.ARCH_DEPT->{
+            UserType.ADMIN,UserType.JUDICIAL_DEPT,UserType.ARCH_DEPT,UserType.AUTH_CENTER->{
                 antiqueService.getAllAntique(pageNo, pageLen,from, to)
             }
             else->{
@@ -108,4 +108,8 @@ class AntiqueController @Autowired constructor(private val antiqueService: Antiq
         return inventoryService.findFileForAntiqueInventory(id)
     }
 
+    @DeleteMapping("/antique/{antiqueId}/inventory/file/{fileId}")
+    fun delFile(@PathVariable antiqueId: Long,@PathVariable fileId : Long){
+        inventoryService.delFileForAntiqueInventory(antiqueId,fileId)
+    }
 }

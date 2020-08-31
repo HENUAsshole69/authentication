@@ -39,7 +39,9 @@ class AntiqueService @Autowired constructor(private val antiqueRepo: AntiqueRepo
         }
     }
 
-    fun getAntiquePicById(id : Long) : ByteArray = antiqueRepo.findPicById(id)?:throw NotFoundException("Pic Not Found")
+    fun getAntiquePicById(id : Long) : ByteArray =
+        contentService.getPic( antiqueRepo.findPicById(id)?:throw NotFoundException("Pic Not Found"))
+
 
     fun getAntiqueDtoById(id : Long) : AntiqueDto = antiqueRepo.findAntiqueDtoById(id)?:throw NotFoundException("Obj Not Found")
 
