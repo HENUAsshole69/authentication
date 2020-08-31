@@ -26,13 +26,12 @@ class ContentService @Autowired constructor(private val map: ObjectMap,private v
         map.remove(id.toString())
     }
 
-    fun saveContent(file : MultipartFile):UUID{
-        val id = UUID.randomUUID()
+    fun saveContent(file : MultipartFile,id:Long){
         rawClient.putObject(bucketName,id.toString(),file.inputStream,file.size,file.contentType)
-        return id;
+
     }
 
-    fun getFile(id : UUID) : Pair<InputStream,Long>{
+    fun getFile(id : Long) : Pair<InputStream,Long>{
         val stat = rawClient.statObject(bucketName,id.toString())
         return Pair(rawClient.getObject(bucketName,id.toString()),stat.length())
     }

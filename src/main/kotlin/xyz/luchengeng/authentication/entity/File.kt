@@ -8,7 +8,6 @@ import javax.persistence.GenerationType
 import javax.persistence.Id
 
 @Entity
-data class File (@Id @GeneratedValue(generator = "UUID")
-@GenericGenerator(name = "UUID", strategy = "org.hibernate.id.UUIDGenerator") val id: UUID,
+data class File (@Id @GeneratedValue(strategy = GenerationType.AUTO) val id: Long?,
                  val fileName : String
 )

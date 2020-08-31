@@ -9,11 +9,12 @@ import xyz.luchengeng.authentication.entity.Inventory
 import xyz.luchengeng.authentication.entity.InventoryDto
 import xyz.luchengeng.authentication.except.NotFoundException
 import xyz.luchengeng.authentication.repo.AntiqueRepo
+import xyz.luchengeng.authentication.repo.FileRepo
 import xyz.luchengeng.authentication.repo.InventoryRepo
 import java.util.*
 
 @Service
-class InventoryService @Autowired constructor(private val  inventoryRepo: InventoryRepo,private val antiqueRepo: AntiqueRepo,private val contentService: ContentService){
+class InventoryService @Autowired constructor(private val  inventoryRepo: InventoryRepo,private val antiqueRepo: AntiqueRepo,private val contentService: ContentService,private val fileRepo: FileRepo){
     fun setInventoryForId(id : Long, inventoryDto: InventoryDto) : Inventory{
         val antique = antiqueRepo.findByIdOrNull(id)?:throw NotFoundException("Antique with specified ID not found")
         inventoryRepo.findByAntiqueId(id).apply {
@@ -37,7 +38,7 @@ class InventoryService @Autowired constructor(private val  inventoryRepo: Invent
         inventoryRepo.save(inventory)
     }
 
-    fun delFileForAntiqueInventory(id : Long,fileId: UUID){
+    fun delFileForAntiqueInventory(id : Long,fileId: Long){
         modInventoryByAntiqueId(id){ inventory->
             inventory.files.removeIf {
                 it.id == fileId
@@ -46,9 +47,11 @@ class InventoryService @Autowired constructor(private val  inventoryRepo: Invent
     }
 
     fun addFileForAntiqueInventory(id : Long,file : MultipartFile,fileName : String){
-        val fileId = contentService.saveContent(file)
+
         modInventoryByAntiqueId(id){
-            it.files.add(File(fileId,fileName))
+            val fileEntity = fileRepo.save(File(null,fileName))
+            val fileId = contentService.saveContent(file,fileEntity.id!!)
+            it.files.add(fileEntity)
         }
     }
 }
