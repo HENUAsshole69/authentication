@@ -14,6 +14,7 @@ java.sourceCompatibility = JavaVersion.VERSION_1_8
 
 repositories {
     mavenCentral()
+    maven("https://jitpack.io")
     flatDir{
         dirs("lib")
     }
@@ -30,6 +31,7 @@ dependencies {
     implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
     runtimeOnly("mysql:mysql-connector-java")
     implementation(files("lib/minio-starter-3.1-SNAPSHOT.jar"))
+    implementation("com.github.ntrrgc:ts-generator:1.1.1")
     testImplementation("org.springframework.boot:spring-boot-starter-test") {
         exclude(group = "org.junit.vintage", module = "junit-vintage-engine")
     }

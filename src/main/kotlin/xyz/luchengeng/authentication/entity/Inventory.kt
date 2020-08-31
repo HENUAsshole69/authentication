@@ -21,6 +21,6 @@ data class InventoryDto(
                         val requisitionStatus: String
                         ){
     fun toEntity(antique: Antique) : Inventory{
-        return Inventory(null,this.requisitionTime,this.requisitionStatus, mutableListOf(),antique)
+        return Inventory(null, LocalDateTime.now(),this.requisitionStatus, mutableListOf(),antique)
     }
 }

@@ -4,7 +4,6 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.PageRequest
 import org.springframework.format.annotation.DateTimeFormat
-import org.springframework.stereotype.Controller
 import org.springframework.web.bind.annotation.*
 import xyz.luchengeng.authentication.entity.*
 import xyz.luchengeng.authentication.repo.AntiqueRepo
@@ -96,7 +95,7 @@ class AntiqueController @Autowired constructor(private val antiqueService: Antiq
     @PostMapping("/antique/{id}/inventory")
     fun postAntiqueInventory(@RequestHeader("x-api-key") jwt : String,@PathVariable id : Long,@RequestBody inventoryDto: InventoryDto){
         val user = securityService.auth("postAntiqueInventory",jwt)
-        inventoryService.createInventoryForId(id, inventoryDto)
+        inventoryService.setInventoryForId(id, inventoryDto)
     }
     @GetMapping("/antique/{id}/inventory")
     fun getAntiqueInventory(@RequestHeader("x-api-key") jwt : String,@PathVariable id : Long) : InventoryDto{

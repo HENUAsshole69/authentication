@@ -14,8 +14,11 @@ import java.util.*
 
 @Service
 class InventoryService @Autowired constructor(private val  inventoryRepo: InventoryRepo,private val antiqueRepo: AntiqueRepo,private val contentService: ContentService){
-    fun createInventoryForId(id : Long,inventoryDto: InventoryDto) : Inventory{
+    fun setInventoryForId(id : Long, inventoryDto: InventoryDto) : Inventory{
         val antique = antiqueRepo.findByIdOrNull(id)?:throw NotFoundException("Antique with specified ID not found")
+        inventoryRepo.findByAntiqueId(id).apply {
+            if(this != null) inventoryRepo.delete(this)
+        }
         return inventoryRepo.save(inventoryDto.toEntity(antique))
     }
 
@@ -37,7 +40,7 @@ class InventoryService @Autowired constructor(private val  inventoryRepo: Invent
     fun delFileForAntiqueInventory(id : Long,fileId: UUID){
         modInventoryByAntiqueId(id){ inventory->
             inventory.files.removeIf {
-                it.uuid == fileId
+                it.id == fileId
             }
         }
     }
