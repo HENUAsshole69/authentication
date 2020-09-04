@@ -21,7 +21,7 @@ class LoggingService constructor(@Value("#{\${opNames}}") private val opNameMap 
     fun getLoggingPage(pageNo : Int,pageLen : Int) : Page<LoggingEntryDto>{
         val page = loggingRepo.findAll(PageRequest.of(pageNo,pageLen))
         val dtoList = page.content.map {
-            LoggingEntryDto(userName = userNameFromToken(it.token), opName = opNameMap[it.methodName]!!, dateTime = it.dateTime)
+            LoggingEntryDto(userName = userNameFromToken(it.token), opName = it.methodName, dateTime = it.dateTime)
         }
         return PageImpl(dtoList,PageRequest.of(pageNo,pageLen),page.totalElements)
     }
