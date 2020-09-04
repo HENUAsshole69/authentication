@@ -25,6 +25,7 @@ class SecurityService @Autowired constructor(private val verRepo: VerRepo,privat
             credRepo.save(Credential(null,User(id=null,type = UserType.ANTIQUE_STORE,name = "文物商店用户",verificationProcesses = mutableListOf(), info =  IndividualApplierInfo.sysUserFromName("文物商店用户"),verifiable = mutableListOf()),"123456"))
             credRepo.save(Credential(null,User(id=null,type = UserType.AUCTIONEER,name = "拍卖行用户",verificationProcesses = mutableListOf(), info =  IndividualApplierInfo.sysUserFromName("拍卖行用户"),verifiable = mutableListOf()),"123456"))
             credRepo.save(Credential(null,User(id=null,type = UserType.AUTH_CENTER,name = "认证中心用户",verificationProcesses = mutableListOf(), info =  IndividualApplierInfo.sysUserFromName("认证中心用户"),verifiable = mutableListOf()),"123456"))
+            credRepo.save(Credential(null,User(id=null,type = UserType.FINANCE,name = "财务部门用户",verificationProcesses = mutableListOf(), info =  IndividualApplierInfo.sysUserFromName("财务部门用户"),verifiable = mutableListOf()),"123456"))
 
         }
     }

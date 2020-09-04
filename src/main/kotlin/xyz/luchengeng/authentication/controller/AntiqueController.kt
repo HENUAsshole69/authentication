@@ -14,6 +14,12 @@ import java.time.LocalDate
 
 @RestController
 class AntiqueController @Autowired constructor(private val antiqueService: AntiqueService,private val securityService: SecurityService,private val antiqueRepo: AntiqueRepo,private val inventoryService: InventoryService) {
+    private fun isGlobalVisibleForUserType(type: UserType) =
+         type == UserType.FINANCE ||
+                type == UserType.AUTH_CENTER ||
+                type == UserType.ADMIN ||
+                type == UserType.JUDICIAL_DEPT ||
+                type == UserType.ARCH_DEPT
     @GetMapping("/antique/page/{pageNo}/{pageLen}")
     fun getAntique(@RequestHeader("x-api-key") jwt : String,
                    @PathVariable pageNo : Int,
@@ -22,8 +28,8 @@ class AntiqueController @Autowired constructor(private val antiqueService: Antiq
                    @RequestParam @DateTimeFormat(iso=DateTimeFormat.ISO.DATE)  to: LocalDate
                    ) : Page<AntiqueDto> {
         val user = securityService.auth("getAntique",jwt)
-        return when(user.type){
-            UserType.ADMIN,UserType.JUDICIAL_DEPT,UserType.ARCH_DEPT,UserType.AUTH_CENTER->{
+        return when{
+            isGlobalVisibleForUserType(user.type)->{
                 antiqueService.getAllAntique(pageNo, pageLen,from, to)
             }
             else->{
@@ -78,8 +84,8 @@ class AntiqueController @Autowired constructor(private val antiqueService: Antiq
                       @RequestParam(required = false) @DateTimeFormat(iso=DateTimeFormat.ISO.DATE) from : LocalDate,
                       @RequestParam(required = false) @DateTimeFormat(iso=DateTimeFormat.ISO.DATE)  to: LocalDate): Page<AntiqueDto>{
         val user = securityService.auth("searchAntique",jwt)
-        return when(user.type){
-            UserType.ADMIN,UserType.JUDICIAL_DEPT,UserType.ARCH_DEPT->
+        return when{
+            isGlobalVisibleForUserType(user.type)->
                 antiqueRepo.searchDto(key,java.sql.Date.valueOf(from),java.sql.Date.valueOf(to), PageRequest.of(pageNo,pageLen))
             else->
                 antiqueRepo.searchDtoOfUserId(key,user.id!!,java.sql.Date.valueOf(from),java.sql.Date.valueOf(to),PageRequest.of(pageNo,pageLen))

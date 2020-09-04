@@ -9,7 +9,8 @@ enum class UserType(s: String) {
     ARCH_DEPT("ARCH_DEPT"),
     JUDICIAL_DEPT("JUDICIAL_DEPT"),
     ADMIN("ADMIN"),
-    AUTH_CENTER("AUTH_CENTER")
+    AUTH_CENTER("AUTH_CENTER"),
+    FINANCE("FINANCE"),
 }
 @Entity
 data class User(@Id @GeneratedValue(strategy = GenerationType.IDENTITY) val id : Long?,
