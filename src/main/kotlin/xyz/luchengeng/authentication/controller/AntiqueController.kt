@@ -57,7 +57,7 @@ class AntiqueController @Autowired constructor(private val antiqueService: Antiq
     @PostMapping("/antique")
     fun postAntique(@RequestHeader("x-api-key") jwt : String,@RequestBody antique: AntiqueDto): AntiqueDto{
         val user = securityService.auth("postAntique",jwt)
-        return AntiqueDto(antiqueService.newAntique(antique))
+        return AntiqueDto(antiqueService.newAntique(antique,user))
     }
     @PostMapping("/antique/{id}/owner/individual")
     fun postAntiqueIndividualOwner(@RequestHeader("x-api-key") jwt : String,@PathVariable id : Long,@RequestBody applierInfo : IndividualApplierInfo){

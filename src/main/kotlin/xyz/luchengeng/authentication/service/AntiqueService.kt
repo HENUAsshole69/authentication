@@ -29,8 +29,8 @@ class AntiqueService @Autowired constructor(private val antiqueRepo: AntiqueRepo
         return antiqueRepo.findAllDto(java.sql.Date.valueOf(from),java.sql.Date.valueOf(to),PageRequest.of(pageNo,pageLen))
     }
 
-    fun newAntique(antique: AntiqueDto) =
-        antiqueRepo.save(Antique(antique,contentService.saveContent(antique.pic?:throw BadRequestException("Antique contains no pinc"))))
+    fun newAntique(antique: AntiqueDto,user: User) =
+        antiqueRepo.save(Antique(antique,user,contentService.saveContent(antique.pic?:throw BadRequestException("Antique contains no pinc"))))
 
 
     fun setAntiqueOwner(id : Long,info : ApplierInfo){
