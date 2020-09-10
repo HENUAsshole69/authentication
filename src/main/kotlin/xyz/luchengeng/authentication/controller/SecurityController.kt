@@ -24,21 +24,11 @@ class SecurityController @Autowired constructor(private val securityService: Sec
         securityService.register(credential)
     }
 
-    @PostMapping("/user/info/individual")
-    fun setApplierIndividualInfo(@RequestHeader("x-api-key") jwt : String,@RequestBody applierInfo: IndividualApplierInfo){
-        val user = securityService.auth("setApplierIndividualInfo",jwt)
-        securityService.setApplierInfo(user, applierInfo)
-    }
 
     @GetMapping("/user")
     fun getUserObj(@RequestHeader("x-api-key") jwt : String)=
             securityService.auth("getUserObj",jwt)
 
-    @PostMapping("/user/info/enterprise")
-    fun setApplierEnterpriseInfo(@RequestHeader("x-api-key") jwt : String,@RequestBody applierInfo: EnterpriseApplierInfo){
-        val user = securityService.auth("setApplierIndividualInfo",jwt)
-        securityService.setApplierInfo(user, applierInfo)
-    }
 
     @PutMapping("/user/verifiable/{userId}")
     fun updateVerificationAuth(@RequestHeader("x-api-key") jwt : String,@PathVariable userId : Long, @RequestBody verifiable : MutableList<VerificationProcessStage>){

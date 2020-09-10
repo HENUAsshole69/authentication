@@ -17,7 +17,6 @@ data class User(@Id @GeneratedValue(strategy = GenerationType.IDENTITY) val id :
                 var type : UserType,
                 val name : String,
                 @OneToMany(cascade = [CascadeType.PERSIST]) val verificationProcesses: MutableList<VerificationProcess>,
-                @OneToOne(cascade = [CascadeType.PERSIST]) var info : ApplierInfo,
                 @ElementCollection val verifiable : MutableList<VerificationProcessStage>
                 )
 

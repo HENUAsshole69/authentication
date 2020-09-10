@@ -19,13 +19,13 @@ class SecurityService @Autowired constructor(private val verRepo: VerRepo,privat
     @PostConstruct
     private fun createAdminUser(){
         if(userRepo.count() == 0L){
-            credRepo.save(Credential(null,User(id=null,type = UserType.ADMIN,name = "admin",verificationProcesses = mutableListOf(), info = IndividualApplierInfo.sysUserFromName("admin"),verifiable = mutableListOf()),"admin"))
-            credRepo.save(Credential(null,User(id=null,type = UserType.ARCH_DEPT,name = "考古部门用户",verificationProcesses = mutableListOf(), info =  IndividualApplierInfo.sysUserFromName("考古部门用户"),verifiable = mutableListOf()),"123456"))
-            credRepo.save(Credential(null,User(id=null,type = UserType.JUDICIAL_DEPT,name = "司法部门用户",verificationProcesses = mutableListOf(), info =  IndividualApplierInfo.sysUserFromName("司法部门用户"),verifiable = mutableListOf()),"123456"))
-            credRepo.save(Credential(null,User(id=null,type = UserType.ANTIQUE_STORE,name = "文物商店用户",verificationProcesses = mutableListOf(), info =  IndividualApplierInfo.sysUserFromName("文物商店用户"),verifiable = mutableListOf()),"123456"))
-            credRepo.save(Credential(null,User(id=null,type = UserType.AUCTIONEER,name = "拍卖行用户",verificationProcesses = mutableListOf(), info =  IndividualApplierInfo.sysUserFromName("拍卖行用户"),verifiable = mutableListOf()),"123456"))
-            credRepo.save(Credential(null,User(id=null,type = UserType.AUTH_CENTER,name = "认证中心用户",verificationProcesses = mutableListOf(), info =  IndividualApplierInfo.sysUserFromName("认证中心用户"),verifiable = mutableListOf()),"123456"))
-            credRepo.save(Credential(null,User(id=null,type = UserType.FINANCE,name = "财务部门用户",verificationProcesses = mutableListOf(), info =  IndividualApplierInfo.sysUserFromName("财务部门用户"),verifiable = mutableListOf()),"123456"))
+            credRepo.save(Credential(null,User(id=null,type = UserType.ADMIN,name = "admin",verificationProcesses = mutableListOf(), verifiable = mutableListOf()),"admin"))
+            credRepo.save(Credential(null,User(id=null,type = UserType.ARCH_DEPT,name = "考古部门用户",verificationProcesses = mutableListOf(),verifiable = mutableListOf()),"123456"))
+            credRepo.save(Credential(null,User(id=null,type = UserType.JUDICIAL_DEPT,name = "司法部门用户",verificationProcesses = mutableListOf(),verifiable = mutableListOf()),"123456"))
+            credRepo.save(Credential(null,User(id=null,type = UserType.ANTIQUE_STORE,name = "文物商店用户",verificationProcesses = mutableListOf(),verifiable = mutableListOf()),"123456"))
+            credRepo.save(Credential(null,User(id=null,type = UserType.AUCTIONEER,name = "拍卖行用户",verificationProcesses = mutableListOf(), verifiable = mutableListOf()),"123456"))
+            credRepo.save(Credential(null,User(id=null,type = UserType.AUTH_CENTER,name = "认证中心用户",verificationProcesses = mutableListOf(),verifiable = mutableListOf()),"123456"))
+            credRepo.save(Credential(null,User(id=null,type = UserType.FINANCE,name = "财务部门用户",verificationProcesses = mutableListOf(),verifiable = mutableListOf()),"123456"))
 
         }
     }
@@ -35,10 +35,6 @@ class SecurityService @Autowired constructor(private val verRepo: VerRepo,privat
         return user
     }
 
-    fun setApplierInfo(user : User,applierInfo: ApplierInfo){
-        user.info = applierInfo
-        userRepo.save(user)
-    }
 
     fun login(userName : String,password : String) : String{
         val user = credRepo.findFirstByUserNameAndPassword(userName, password)?:throw NotAuthorizedException("UserName/Password Error")
