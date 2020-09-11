@@ -26,6 +26,14 @@ class LoggingService constructor(@Value("#{\${opNames}}") private val opNameMap 
         return PageImpl(dtoList,PageRequest.of(pageNo,pageLen),page.totalElements)
     }
 
+    fun getLoggingPage(pageable: PageRequest) : Page<LoggingEntryDto>{
+        val page = loggingRepo.findAll(pageable)
+        val dtoList = page.content.map {
+            LoggingEntryDto(userName = userNameFromToken(it.token), opName = it.methodName, dateTime = it.dateTime)
+        }
+        return PageImpl(dtoList,pageable,page.totalElements)
+    }
+
     private fun userNameFromToken(token : String) : String? =
             try {
             val decoded = JWT.decode(token)

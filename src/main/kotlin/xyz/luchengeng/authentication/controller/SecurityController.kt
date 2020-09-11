@@ -45,10 +45,20 @@ class SecurityController @Autowired constructor(private val securityService: Sec
         val user = securityService.auth("getAllUser",jwt)
         return securityService.getUserPage(PageRequest.of(pageNo,pageLen))
     }
+    @PostMapping("/user/page")
+    fun getAllUser(@RequestHeader("x-api-key") jwt : String,@RequestBody pageable : ApiPageRequest): Page<User> {
+        val user = securityService.auth("getAllUser",jwt)
+        return securityService.getUserPage(pageable = pageable.toPageRequest())
+    }
     @GetMapping("/user/search/page/{pageNo}/{pageLen}")
     fun searchUser(@RequestHeader("x-api-key") jwt : String,@PathVariable pageNo : Int,@PathVariable pageLen : Int,@RequestParam key : String): Page<User>{
         val user = securityService.auth("searchUser",jwt)
         return securityService.searchUser(key,PageRequest.of(pageNo,pageLen))
+    }
+    @PostMapping("/user/search/page")
+    fun searchUser(@RequestHeader("x-api-key") jwt : String,@RequestParam key : String,@RequestBody pageable : ApiPageRequest): Page<User>{
+        val user = securityService.auth("searchUser",jwt)
+        return securityService.searchUser(key,pageable = pageable.toPageRequest())
     }
     @DeleteMapping("/user/{id}")
     fun delUser(@RequestHeader("x-api-key") jwt : String,@PathVariable id : Long){
