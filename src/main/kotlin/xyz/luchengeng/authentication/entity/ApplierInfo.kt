@@ -15,8 +15,8 @@ enum class ApplierType{
                             val type : ApplierType,
                             val tel : String,
                             val email : String,
-                            val fax : String,
-                            val zipCode : String,
+                            val fax : String?,
+                            val zipCode : String?,
                             val contactAddress: String
                             )
 @Entity
@@ -24,8 +24,8 @@ class IndividualApplierInfo(name : String,
                                  type : ApplierType,
                                  tel : String,
                                  email : String,
-                                 fax : String,
-                                 zipCode : String,
+                                 fax : String?,
+                                 zipCode : String?,
                                  contactAddress: String,
                                  val citizenId : String
 ) : ApplierInfo(null,name, type, tel, email, fax, zipCode, contactAddress){
@@ -39,8 +39,8 @@ class EnterpriseApplierInfo(name : String,
                             type : ApplierType,
                             tel : String,
                             email : String,
-                            fax : String,
-                            zipCode : String,
+                            fax : String?,
+                            zipCode : String?,
                             contactAddress: String,
                             val licenseId : String,
                             val registrationAddress : String,
