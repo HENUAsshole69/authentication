@@ -28,8 +28,8 @@ interface AntiqueRepo : JpaRepository<Antique,Long> {
     fun findAntiqueDtoAtVerificationStage(stage : Int,pageable : Pageable) : Page<AntiqueDto>
     @Query("select a.verificationProcesses  from Antique a where a.id = ?1")
     fun getVerificationsByAntiqueId(id : Long) : List<VerificationProcess>
-    @Query("select new xyz.luchengeng.authentication.entity.AntiqueDto(a) from Antique a where (a.name like %?1% or a.desp like %?1%) and a.date between ?2 and ?3",countQuery = "select count(a) from Antique a where (a.name like %?1% or a.desp like %?1%) and a.date between ?2 and ?3")
+    @Query("select new xyz.luchengeng.authentication.entity.AntiqueDto(a) from Antique a where (a.name like %?1% or a.desp like %?1% or a.user.name like %?1% ) and a.date between ?2 and ?3",countQuery = "select count(a) from Antique a where (a.name like %?1% or a.desp like %?1% or a.user.name like %?1% ) and a.date between ?2 and ?3")
     fun searchDto(keyWord : String, from : Date, to: Date,pageable : Pageable) : Page<AntiqueDto>
-    @Query("select new xyz.luchengeng.authentication.entity.AntiqueDto(a) from Antique a where (a.name like %?1% or a.desp like %?1%) and a.user.id = ?2 and a.date between ?3 and ?4",countQuery = "select count(a) from Antique a where (a.name like %?1% or a.desp like %?1%) and a.user.id = ?2 and a.date between ?3 and ?4")
+    @Query("select new xyz.luchengeng.authentication.entity.AntiqueDto(a) from Antique a where (a.name like %?1% or a.desp like %?1% or a.user.name like %?1% ) and a.user.id = ?2 and a.date between ?3 and ?4",countQuery = "select count(a) from Antique a where (a.name like %?1% or a.desp like %?1% or a.user.name like %?1% ) and a.user.id = ?2 and a.date between ?3 and ?4")
     fun searchDtoOfUserId(keyWord : String,userId : Long, from : Date, to: Date,pageable : Pageable) : Page<AntiqueDto>
 }
