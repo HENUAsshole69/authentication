@@ -96,6 +96,7 @@ class AntiqueController @Autowired constructor(private val antiqueService: Antiq
     @PostMapping("/antique/wearAndTear/{id}")
     fun postWearAndTearForAntique(@RequestHeader("x-api-key") jwt : String,@PathVariable id : Long, @RequestBody wearAndTear: WearAndTear){
         val user = securityService.auth("postWearAndTearForAntique",jwt)
+        wearAndTear.user = user
         antiqueService.saveWearAndTear(id,wearAndTear)
     }
     @PostMapping("/antique/{id}/inventory")
